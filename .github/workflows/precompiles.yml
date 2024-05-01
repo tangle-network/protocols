@@ -1,0 +1,142 @@
+name: Generate Precompiles
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: rust-compile-${{ github.sha }}
+  cancel-in-progress: true
+
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  precompiles:
+    name: Release - ${{ matrix.platform.release_for }}
+    strategy:
+      matrix:
+        platform:
+          - release_for: Windows-x86_64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            arch: x86_64
+            bin: protocol
+            name: protocol-x86_64-pc-windows-msvc.tar.gz
+            command: build
+
+          - release_for: Linux-x86_64
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-gnu
+            arch: x84_64
+            bin: protocol
+            name: protocol-linux-x86_64.tar.gz
+            command: build
+
+          - release_for: macOS-x86_64
+            os: macOS-13
+            target: x86_64-apple-darwin
+            arch: x86_64
+            bin: protocol
+            name: protocol-Darwin-x86_64.tar.gz
+            command: build
+
+          - release_for: macOS-aarch64-apple
+            os: macOS-latest
+            target: aarch64-apple-darwin
+            arch: aarch64
+            bin: protocol
+            name: protocol-Darwin-apple.tar.gz
+            command: build
+
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install protobuf (If linux)
+        if: ${{ matrix.platform.os == 'ubuntu-20.04' }}
+        run: sudo apt-get install protobuf-compiler
+      - name: Install protobuf and gmp (If macOS)
+        if: ${{ matrix.platform.os == 'macOS-latest' || matrix.platform.os == 'macOS-13'}}
+        run: brew install protobuf gmp
+      - name: Install protobuf (If windows)
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+        run: choco install protoc
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: ${{ matrix.platform.command }}
+          target: ${{ matrix.platform.target }}
+          args: "--release"
+          strip: true
+      - name: Rename the binary, named "protocol" to "protocol-$GITHUB_SHA" (mac or linux)
+        if: ${{ matrix.platform.os != 'windows-latest' }}
+        run: mv ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }} ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}
+      - name: Rename the binary, named "protocol" to "protocol-$GITHUB_SHA" (windows)
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+        shell: powershell
+        run: Rename-Item -Path "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.exe" -NewName "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
+      - name: Save the binary path to the github environment (windows), replace all '\' with '/'
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+        shell: powershell
+        run: |
+          $path = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
+          $path = $path -replace '\\', '/'
+          echo "BIN_PATH=$path" >> $env:GITHUB_ENV
+      - name: Save the binary path to the github environment (mac or linux)
+        if: ${{ matrix.platform.os != 'windows-latest' }}
+        run: echo "BIN_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}" >> $GITHUB_ENV
+      - name: Generate the Sha256 of the binary (Mac x86_64 and apple-silicon)
+        if: ${{ matrix.platform.os == 'macOS-latest' || matrix.platform.os == 'macOS-13'}}
+        run: |
+          output=($(shasum -a 256 ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}))
+          # The output is in the format of "hash  filename". We want just the hash
+          hash=$output
+          echo "SHA-256: $hash"
+          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256
+      - name: Generate the Sha256 of the binary (Linux x86_64)
+        if: ${{ matrix.platform.os == 'ubuntu-20.04' }}
+        run: |
+          output=($(sha256sum ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}))
+          # The output is in the format of "hash  filename". We want just the hash
+          hash=$output
+          echo "SHA-256: $hash"
+          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256
+      - name: Generate the Sha256 of the binary (Windows x86_64)
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+        shell: powershell
+        run: |
+          # Define the input and output file paths
+          $inputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
+          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe.sha256"
+          
+          # Calculate the SHA256 hash of the input file
+          $sha256 = Get-FileHash -Path $inputFile -Algorithm SHA256
+
+          # Extract the hash value from the FileHash object
+          $hashValue = $sha256.Hash
+          
+          # print the hash value
+          echo "SHA-256: $hashValue"
+
+          # Write the hash value to the output file
+          Set-Content -Path $outputFile -Value $hashValue
+      - name: Save the sha256 path to the github environment (mac and linux)
+        if: ${{ matrix.platform.os != 'windows-latest' }}
+        run: echo "SHA_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256" >> $GITHUB_ENV
+      - name: Save the sha256 path to the github environment (windows)
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+        shell: powershell
+        run: |
+          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe.sha256"
+          $outputFile = $outputFile -replace '\\','/'
+          echo "Output file is: $outputFile"
+          # echo the contents of the output file
+          Get-Content $outputFile
+          echo "SHA_PATH=$outputFile" >> $GITHUB_ENV
+      - name: Release
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          gh release create ${{ matrix.platform.target }}-${{ github.sha }} ${{ env.BIN_PATH }} ${{ env.SHA_PATH }}

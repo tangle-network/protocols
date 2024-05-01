@@ -1,0 +1,14 @@
+[package]
+name = "protocol-template"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gadget-common = { git = "https://github.com/webb-tools/gadget" }
+tokio = { version = "1.37.0", features = ["full"] }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"
