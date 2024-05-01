@@ -26,3 +26,7 @@ sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "releas
 
 [dev-dependencies]
 test-utils = { git = "https://github.com/webb-tools/gadget" }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"
