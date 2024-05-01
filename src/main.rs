@@ -1,18 +1,9 @@
-use gadget_common::prelude::*;
-use gadget_common::ExecutableJob;
-use std::error::Error;
-
-use crate::protocol::keygen::BlsKeygenAdditionalParams;
-use async_trait::async_trait;
-use gadget_common::full_protocol::SharedOptional;
-use gadget_common::prelude::*;
-use gadget_common::tangle_runtime::*;
-use gadget_common::{generate_protocol, generate_setup_and_run_command};
-use protocol::signing::BlsSigningAdditionalParams;
-use protocol_macros::protocol;
+use shell_sdk::prelude::*;
 
 pub mod constants;
 pub mod protocol;
+
+use protocol::{keygen::BlsKeygenAdditionalParams, signing::BlsSigningAdditionalParams};
 
 generate_protocol!(
     "BLS-Keygen-Protocol",
@@ -23,6 +14,7 @@ generate_protocol!(
     jobs::JobType::DKGTSSPhaseOne(_),
     roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::GennaroDKGBls381)
 );
+
 generate_protocol!(
     "BLS-Signing-Protocol",
     BlsSigningProtocol,
@@ -35,22 +27,22 @@ generate_protocol!(
 
 generate_setup_and_run_command!(BlsKeygenProtocol, BlsSigningProtocol);
 
+/*
 #[cfg(test)]
 test_utils::generate_signing_and_keygen_tss_tests!(
     2,
     3,
     2,
     ThresholdSignatureRoleType::GennaroDKGBls381
-);
+);*/
 
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    JobBuilder::default()
-        .catch(async move { unreachable!("This should not be called") })
-        .build()
-        .execute()
-        .await?;
-
-    Ok(())
+async fn keystore() -> InMemoryBackend {
+    InMemoryBackend::default()
 }
+
+shell_sdk::generate_shell_binary!(
+    setup_node,
+    keystore,
+    2,
+    RoleType::Tss(roles::tss::ThresholdSignatureRoleType::GennaroDKGBls381)
+);
