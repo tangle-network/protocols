@@ -1,5 +1,5 @@
 [package]
-name = "protocol-template"
+name = "threshold-bls-protocol"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,8 +7,23 @@ edition = "2021"
 
 [dependencies]
 gadget-common = { git = "https://github.com/webb-tools/gadget" }
-tokio = { version = "1.37.0", features = ["full"] }
+async-trait = { version = "0.1.80" }
+futures = { version = "0.3.30" }
+tokio = { version = "1.37.0" }
+protocol-macros = { git = "https://github.com/webb-tools/gadget" }
+gennaro-dkg = { git = "https://github.com/mikelodder7/gennaro-dkg.git", default-features = false, rev = "1c15242", features = ["curve25519"] }
+serde = { version = "1.0.199", features = ["derive"] }
+serde_json = { version = "1.0.116" }
+round-based = { git = "https://github.com/webb-tools/round-based-protocol", features = ["dev"] }
+rand = { version = "0.8.5" }
+itertools = { version = "0.12.1" }
+log = { version = "0.4.21" }
+bls12_381_plus = { version = "0.8.13" }
+snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
+parking_lot = { version = "0.12.2" }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 
-[[bin]]
-name = "protocol"
-path = "src/main.rs"
+
+[dev-dependencies]
+test-utils = { git = "https://github.com/webb-tools/gadget" }
+tangle-primitives = { git = "https://github.com/webb-tools/tangle/" }
