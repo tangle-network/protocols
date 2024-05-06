@@ -1,11 +1,13 @@
-[package]
-name = "threshold-bls-protocol"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+resolver = "2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+members = [
+"bls",
+]
 
-[dependencies]
+[workspace.dependencies]
+bls = { path = "bls" }
+
 shell-sdk = { git = "https://github.com/webb-tools/gadget" }
 gadget-common = { git = "https://github.com/webb-tools/gadget" }
 async-trait = { version = "0.1.73" }
@@ -23,10 +25,4 @@ bls12_381_plus = { version = "0.8.13" }
 snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
 parking_lot = { version = "0.12.1" }
 sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
-
-[dev-dependencies]
 test-utils = { git = "https://github.com/webb-tools/gadget" }
-
-[[bin]]
-name = "protocol"
-path = "src/main.rs"
