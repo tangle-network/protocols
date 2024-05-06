@@ -128,11 +128,11 @@ where
             (index + 1) as u32,
             received_comshare.commitments[0],
             &p_sk.to_public(),
-        );
+        )?;
     }
 
     tracer.stage("Compute partial signature");
-    let signers = aggregator.get_signers();
+    let signers = aggregator.signers();
     let partial_sig = p_sk
         .sign(
             message_to_sign,
