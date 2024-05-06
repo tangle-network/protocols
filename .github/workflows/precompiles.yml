@@ -1,11 +1,19 @@
 name: Generate Precompiles
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Cargo package name'
+        required: true
+        options:
+          - threshold-bls-protocol
+          - dfns-cggmp21-protocol
+          - ice-frost-protocol
+          - stub-protocol
+          - wsts-protocol
+          - zcash-frost-protocol
+          - zk-saas-protocol
 concurrency:
   group: rust-compile-${{ github.sha }}
   cancel-in-progress: true
@@ -69,48 +77,47 @@ jobs:
         with:
           command: ${{ matrix.platform.command }}
           target: ${{ matrix.platform.target }}
-          args: "--release"
+          args: "--release --package ${{ github.event.inputs.package }}"
           strip: true
       - name: Rename the binary, named "protocol" to "protocol-$GITHUB_SHA" (mac or linux)
         if: ${{ matrix.platform.os != 'windows-latest' }}
         run: mv ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }} ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}
-      - name: Rename the binary, named "protocol" to "protocol-$GITHUB_SHA" (windows)
+      - name: Rename the binary, named "protocol" to "protocol=-${{ github.event.inputs.package }}-$GITHUB_SHA" (windows)
         if: ${{ matrix.platform.os == 'windows-latest' }}
         shell: powershell
-        run: Rename-Item -Path "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.exe" -NewName "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
+        run: Rename-Item -Path "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.exe" -NewName "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.exe"
       - name: Save the binary path to the github environment (windows), replace all '\' with '/'
         if: ${{ matrix.platform.os == 'windows-latest' }}
         shell: powershell
         run: |
-          $path = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
+          $path = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.exe"
           $path = $path -replace '\\', '/'
           echo "BIN_PATH=$path" >> $env:GITHUB_ENV
       - name: Save the binary path to the github environment (mac or linux)
         if: ${{ matrix.platform.os != 'windows-latest' }}
-        run: echo "BIN_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}" >> $GITHUB_ENV
+        run: echo "BIN_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}" >> $GITHUB_ENV
       - name: Generate the Sha256 of the binary (Mac x86_64 and apple-silicon)
         if: ${{ matrix.platform.os == 'macOS-latest' || matrix.platform.os == 'macOS-13'}}
         run: |
-          output=($(shasum -a 256 ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}))
-          # The output is in the format of "hash  filename". We want just the hash
+          output=($(shasum -a 256 ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}))
           hash=$output
           echo "SHA-256: $hash"
-          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256
+          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.sha256
       - name: Generate the Sha256 of the binary (Linux x86_64)
         if: ${{ matrix.platform.os == 'ubuntu-20.04' }}
         run: |
-          output=($(sha256sum ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}))
+          output=($(sha256sum ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}))
           # The output is in the format of "hash  filename". We want just the hash
           hash=$output
           echo "SHA-256: $hash"
-          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256
+          echo "$hash" &> ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.sha256
       - name: Generate the Sha256 of the binary (Windows x86_64)
         if: ${{ matrix.platform.os == 'windows-latest' }}
         shell: powershell
         run: |
           # Define the input and output file paths
-          $inputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe"
-          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe.sha256"
+          $inputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.exe"
+          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.exe.sha256"
           
           # Calculate the SHA256 hash of the input file
           $sha256 = Get-FileHash -Path $inputFile -Algorithm SHA256
@@ -125,12 +132,12 @@ jobs:
           Set-Content -Path $outputFile -Value $hashValue
       - name: Save the sha256 path to the github environment (mac and linux)
         if: ${{ matrix.platform.os != 'windows-latest' }}
-        run: echo "SHA_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.sha256" >> $GITHUB_ENV
+        run: echo "SHA_PATH=${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.sha256" >> $GITHUB_ENV
       - name: Save the sha256 path to the github environment (windows)
         if: ${{ matrix.platform.os == 'windows-latest' }}
         shell: powershell
         run: |
-          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}.exe.sha256"
+          $outputFile = "${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}.exe.sha256"
           $outputFile = $outputFile -replace '\\','/'
           echo "Output file is: $outputFile"
           # echo the contents of the output file

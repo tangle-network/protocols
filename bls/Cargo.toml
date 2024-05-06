@@ -1,0 +1,33 @@
+[package]
+name = "threshold-bls-protocol"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+shell-sdk = { workspace = true }
+gadget-common = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+protocol-macros = { workspace = true }
+gennaro-dkg = { workspace = true, default-features = false,  features = ["curve25519"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+round-based = { workspace = true, features = ["dev"] }
+rand = { workspace = true }
+itertools = { workspace = true }
+log = { workspace = true }
+bls12_381_plus = { workspace = true }
+snowbridge-milagro-bls = { workspace = true, default-features = false }
+parking_lot = { workspace = true }
+sp-core = { workspace = true }
+tangle-primitives = { workspace = true }
+
+[dev-dependencies]
+test-utils = { workspace = true }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"

@@ -1,0 +1,22 @@
+[package]
+name = "stub-protocol"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+shell-sdk = { workspace = true }
+gadget-common = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+protocol-macros = { workspace = true }
+parking_lot = { workspace = true }
+sp-core = { workspace = true }
+
+[dev-dependencies]
+test-utils = { workspace = true }
+tangle-primitives = { workspace = true }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"
