@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       package:
+        type: choice
         description: 'Cargo package name'
         required: true
         options:
