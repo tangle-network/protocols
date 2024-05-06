@@ -6,6 +6,7 @@ use gadget_common::prelude::*;
 use gadget_common::tangle_runtime::*;
 use gadget_common::{generate_protocol, generate_setup_and_run_command};
 use protocol_macros::protocol;
+use shell_sdk::prelude::*;
 
 pub mod constants;
 pub mod curves;
@@ -42,3 +43,19 @@ generate_protocol!(
 );
 
 generate_setup_and_run_command!(IceFrostKeygenProtocol, IceFrostSigningProtocol);
+
+async fn keystore() -> InMemoryBackend {
+    InMemoryBackend::default()
+}
+
+shell_sdk::generate_shell_binary!(
+    setup_node,
+    keystore,
+    2,
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostEd25519),
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostEd448),
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostP256),
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostP384),
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostSecp256k1),
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostRistretto255)
+);

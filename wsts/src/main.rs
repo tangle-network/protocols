@@ -4,6 +4,7 @@ use gadget_common::generate_protocol;
 use gadget_common::prelude::*;
 use gadget_common::tangle_runtime::*;
 use protocols::keygen::WstsKeygenExtraParams;
+use shell_sdk::prelude::*;
 
 pub mod protocols;
 
@@ -28,6 +29,17 @@ generate_protocol!(
 );
 
 generate_setup_and_run_command!(WstsKeygenProtocol, WstsSigningProtocol);
+
+async fn keystore() -> InMemoryBackend {
+    InMemoryBackend::default()
+}
+
+shell_sdk::generate_shell_binary!(
+    setup_node,
+    keystore,
+    2,
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::WstsV2)
+);
 
 #[cfg(test)]
 mod wsts {

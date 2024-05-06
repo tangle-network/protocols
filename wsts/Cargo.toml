@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+shell-sdk = { workspace = true }
 gadget-common = { workspace = true }
 async-trait = { workspace = true }
 futures = { workspace = true }
@@ -26,3 +27,7 @@ hex = { workspace = true }
 [dev-dependencies]
 test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"

@@ -27,14 +27,13 @@ generate_protocol!(
 
 generate_setup_and_run_command!(BlsKeygenProtocol, BlsSigningProtocol);
 
-/*
 #[cfg(test)]
 test_utils::generate_signing_and_keygen_tss_tests!(
     2,
     3,
     2,
     ThresholdSignatureRoleType::GennaroDKGBls381
-);*/
+);
 
 async fn keystore() -> InMemoryBackend {
     InMemoryBackend::default()

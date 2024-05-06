@@ -1,8 +1,89 @@
+use crate::network::ZkNetworkService;
+use crate::protocol::ZkJobAdditionalParams;
+use async_trait::async_trait;
+use gadget_common::client::{ClientWithApi, JobsClient, PalletSubmitter};
+use gadget_common::debug_logger::DebugLogger;
+use gadget_common::full_protocol::SharedOptional;
+use gadget_common::prelude::*;
+use gadget_common::tangle_runtime::*;
+use gadget_common::{generate_protocol, Error};
+use mpc_net::prod::RustlsCertificate;
+use network::ZkProtocolNetworkConfig;
+use protocol_macros::protocol;
+use shell_sdk::prelude::*;
+use sp_core::Pair;
+use std::sync::Arc;
+use tokio_rustls::rustls::{Certificate, PrivateKey, RootCertStore};
+
+pub mod network;
+pub mod protocol;
+
+generate_protocol!(
+    "ZK-Protocol",
+    ZkProtocol,
+    ZkJobAdditionalParams,
+    protocol::generate_protocol_from,
+    protocol::create_next_job,
+    jobs::JobType::ZkSaaSPhaseTwo(_),
+    roles::RoleType::ZkSaaS(roles::zksaas::ZeroKnowledgeRoleType::ZkSaaSGroth16)
+);
+
+pub async fn create_zk_network<KBE: KeystoreBackend>(
+    config: ZkProtocolNetworkConfig<KBE>,
+) -> Result<ZkNetworkService, Error> {
+    let our_identity = RustlsCertificate {
+        cert: Certificate(config.public_identity_der.clone()),
+        private_key: PrivateKey(config.private_identity_der.clone()),
+    };
+
+    if let Some(addr) = &config.king_bind_addr {
+        ZkNetworkService::new_king(config.key_store.pair().public(), *addr, our_identity).await
+    } else {
+        let king_addr = config
+            .client_only_king_addr
+            .expect("King address must be specified if king bind address is not specified");
+
+        let mut king_certs = RootCertStore::empty();
+        king_certs
+            .add(&Certificate(
+                config
+                    .client_only_king_public_identity_der
+                    .clone()
+                    .expect("The client must specify the identity of the king"),
+            ))
+            .map_err(|err| Error::InitError {
+                err: err.to_string(),
+            })?;
+
+        ZkNetworkService::new_client(
+            king_addr,
+            config.key_store.pair().public(),
+            our_identity,
+            king_certs,
+        )
+        .await
+    }
+}
+
+generate_setup_and_run_command!(ZkProtocol);
+
+async fn keystore() -> InMemoryBackend {
+    InMemoryBackend::default()
+}
+
+shell_sdk::generate_shell_binary!(
+    setup_node,
+    keystore,
+    1,
+    roles::RoleType::ZkSaaS(roles::zksaas::ZeroKnowledgeRoleType::ZkSaaSGroth16)
+);
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "parallel")]
     use rayon::prelude::*;
 
+    use crate::network::ZkProtocolNetworkConfig;
     use ark_bn254::{Bn254, Fr as Bn254Fr};
     use ark_circom::{CircomBuilder, CircomConfig, CircomReduction};
     use ark_crypto_primitives::snark::SNARK;
@@ -29,7 +110,6 @@ mod tests {
     use tangle_primitives::AccountId;
     use test_utils::mock::{id_to_public, id_to_sr25519_public, Jobs, RuntimeOrigin};
     use test_utils::sync::substrate_test_channel::MultiThreadedTestExternalities;
-    use zk_saas_protocol::network::ZkProtocolNetworkConfig;
 
     #[tokio::test(flavor = "multi_thread")]
     async fn test_zk_job() {
@@ -51,7 +131,7 @@ mod tests {
                 "../../fixtures/sha256/sha256_js/sha256.wasm",
                 "../../fixtures/sha256/sha256.r1cs",
             )
-            .unwrap();
+                .unwrap();
             let mut builder = CircomBuilder::new(cfg);
             let rng = &mut ark_std::rand::rngs::StdRng::from_seed([42u8; 32]);
             builder.push_input("a", 1);
@@ -211,14 +291,14 @@ mod tests {
 
             // For testing, override the generated networks from the NodeInput, and use what we will
             // for testnet/mainnet
-            let network = zk_saas_protocol::create_zk_network(network_cfg)
+            let network = crate::create_zk_network(network_cfg)
                 .await
                 .expect("Should create network");
 
             let prometheus_config = node_info.prometheus_config.clone();
             log::info!(target: "gadget", "Started node {}", node_info.node_index);
             // ZkSaaS only requires 1 client and 1 network, no need to use the NodeInput's vectors
-            if let Err(err) = zk_saas_protocol::run(
+            if let Err(err) = crate::run(
                 vec![client],
                 pallet_tx,
                 vec![network],

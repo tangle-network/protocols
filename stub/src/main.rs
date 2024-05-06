@@ -1,6 +1,7 @@
 use gadget_common::full_protocol::SharedOptional;
 use gadget_common::prelude::*;
 use gadget_common::tangle_runtime::*;
+use shell_sdk::prelude::*;
 use sp_core::sr25519;
 
 #[protocol]
@@ -123,3 +124,14 @@ generate_setup_and_run_command!(StubProtocol, StubProtocol);
 //    3,
 //    ThresholdSignatureRoleType::GennaroDKGBls381
 //);
+
+async fn keystore() -> InMemoryBackend {
+    InMemoryBackend::default()
+}
+
+shell_sdk::generate_shell_binary!(
+    setup_node,
+    keystore,
+    2,
+    roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::WstsV2)
+);

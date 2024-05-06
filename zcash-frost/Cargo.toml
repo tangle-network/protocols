@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+shell-sdk = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "net"] }
 gadget-common = { workspace = true }
@@ -47,3 +48,6 @@ parking_lot = { workspace = true }
 test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
 
+[[bin]]
+name = "protocol"
+path = "src/main.rs"

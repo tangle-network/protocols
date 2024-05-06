@@ -23,6 +23,7 @@ bls12_381_plus = { workspace = true }
 snowbridge-milagro-bls = { workspace = true, default-features = false }
 parking_lot = { workspace = true }
 sp-core = { workspace = true }
+tangle-primitives = { workspace = true }
 
 [dev-dependencies]
 test-utils = { workspace = true }
