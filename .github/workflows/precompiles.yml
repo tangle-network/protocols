@@ -82,7 +82,7 @@ jobs:
           strip: true
       - name: Rename the binary, named "protocol" to "protocol-$GITHUB_SHA" (mac or linux)
         if: ${{ matrix.platform.os != 'windows-latest' }}
-        run: mv ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }} ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.sha }}
+        run: mv ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }} ${{ github.workspace }}/target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ github.event.inputs.package }}-${{ github.sha }}
       - name: Rename the binary, named "protocol" to "protocol=-${{ github.event.inputs.package }}-$GITHUB_SHA" (windows)
         if: ${{ matrix.platform.os == 'windows-latest' }}
         shell: powershell
