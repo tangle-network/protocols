@@ -3,26 +3,189 @@ resolver = "2"
 
 members = [
 "bls",
+    "dfns-cggmp21",
+    "ice-frost",
+    "stub",
+    "wsts",
+    "zcash-frost",
+    "zk-saas"
 ]
 
 [workspace.dependencies]
 bls = { path = "bls" }
+dfns-cggmp21-protocol = { path = "dfns-cggmp21" }
+ice-frost-protocol = { path = "ice-frost" }
+stub-protocol = { path = "stub" }
+wsts-protocol = { path = "wsts" }
+zcash-frost-protocol = { path = "zcash-frost" }
+zk-saas-protocol = { path = "zk-saas" }
 
 shell-sdk = { git = "https://github.com/webb-tools/gadget" }
 gadget-common = { git = "https://github.com/webb-tools/gadget" }
-async-trait = { version = "0.1.73" }
-futures = { version = "0.3.30" }
-tokio = { version = "1.32.0" }
 protocol-macros = { git = "https://github.com/webb-tools/gadget" }
-gennaro-dkg = { git = "https://github.com/mikelodder7/gennaro-dkg.git", default-features = false, rev = "1c15242", features = ["curve25519"] }
-serde = { version = "1.0.188", features = ["derive"] }
-serde_json = { version = "1.0" }
-round-based = { git = "https://github.com/webb-tools/round-based-protocol", features = ["dev"] }
-rand = { version = "0.8.5" }
-itertools = { version = "0.12.0" }
-log = { version = "0.4.20" }
-bls12_381_plus = { version = "0.8.13" }
-snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
-parking_lot = { version = "0.12.1" }
-sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+gadget-core = { git = "https://github.com/webb-tools/gadget" }
 test-utils = { git = "https://github.com/webb-tools/gadget" }
+
+snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
+gennaro-dkg = { git = "https://github.com/mikelodder7/gennaro-dkg.git", default-features = false, rev = "1c15242" }
+pallet-jobs-rpc-runtime-api = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+pallet-jobs = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+pallet-dkg = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+pallet-zksaas = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+tangle-primitives = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+tangle-subxt = { git = "https://github.com/webb-tools/tangle.git", default-features = false, branch = "main" }
+# pallet-jobs-rpc-runtime-api = { path = "../tangle/pallets/jobs/rpc/runtime-api" }
+# pallet-jobs = { path = "../tangle/pallets/jobs" }
+# pallet-dkg = { path = "../tangle/pallets/dkg" }
+# pallet-zksaas = { path = "../tangle/pallets/zksaas" }
+# tangle-primitives = { path = "../tangle/primitives" }
+# tangle-subxt = { path = "../tangle/tangle-subxt", default-features = false }
+subxt-signer = { version = "0.34.0", default-features = false, features = ["native"] }
+
+# Round-based dependencies
+round-based = { git = "https://github.com/webb-tools/round-based-protocol", features = [] }
+round-based-21 = { package = "round-based", version = "0.2.1" }
+round-based-zengo = { package = "round-based", git = "https://github.com/ZenGo-X/round-based-protocol", features = ["derive"] }
+
+curv = { package = "curv-kzen", version = "0.10.0" }
+digest = "0.10"
+dfns-cggmp21 = { package = "cggmp21", git = "https://github.com/dfns/cggmp21" }
+udigest = { version = "0.1", features = ["std", "derive"] }
+
+frost-core = { git = "https://github.com/LIT-protocol/frost" }
+frost-ed25519 = { git = "https://github.com/LIT-protocol/frost" }
+frost-ed448 = { git = "https://github.com/LIT-protocol/frost" }
+frost-p256 = { git = "https://github.com/LIT-protocol/frost" }
+frost-p384 = { git = "https://github.com/LIT-protocol/frost" }
+frost-ristretto255 = { git = "https://github.com/LIT-protocol/frost" }
+frost-secp256k1 = { git = "https://github.com/LIT-protocol/frost" }
+frost-rerandomized = { git = "https://github.com/LIT-protocol/frost" }
+frost-taproot = { git = "https://github.com/webb-tools/tangle.git", branch = "main" }
+# frost-taproot = { path = "../tangle/pallets/dkg/frost/frost-taproot" }
+
+bls12_381_plus = "0.8.13"
+wsts = "3.0.0"
+ice-frost = { git = "https://github.com/topos-protocol/ice-frost.git" }
+
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-io = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-std = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-utils = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-application-crypto = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-consensus = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-keyring = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-keystore = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-timestamp = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-block-builder = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-version = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-externalities = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-arithmetic = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-test-primitives = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-tracing = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+
+sc-client-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-offchain = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-basic-authorship = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-executor = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-service = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-keystore = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-telemetry = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-cli = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-consensus = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-rpc-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-rpc-spec-v2 = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sc-block-builder = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+parity-scale-codec = "3.6.5"
+
+prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+substrate-test-runtime = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+substrate-test-runtime-client = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+
+substrate-build-script-utils = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+pallet-im-online = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+substrate-frame-rpc-system = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+fork-tree = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+scale-info = "2.10.0"
+
+frame-system = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+frame-support = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+frame-executive = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+
+pallet-balances = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+pallet-timestamp = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+
+mpc-net = { git = "https://github.com/webb-tools/zk-SaaS/", rev = "769c49ad6cc98308da35db2e4e0752cbaacc3aa0" }
+dist-primitives = { git = "https://github.com/webb-tools/zk-SaaS/", rev = "769c49ad6cc98308da35db2e4e0752cbaacc3aa0" }
+secret-sharing = { git = "https://github.com/webb-tools/zk-SaaS/", rev = "769c49ad6cc98308da35db2e4e0752cbaacc3aa0" }
+groth16 = { git = "https://github.com/webb-tools/zk-SaaS/", rev = "769c49ad6cc98308da35db2e4e0752cbaacc3aa0" }
+
+# ARK Libraries
+ark-std = { version = "0.4.0", default-features = false, features = ["print-trace", "std"] }
+ark-crypto-primitives = { version = "0.4.0", default-features = false }
+ark-ff = { version = "0.4.2", default-features = false }
+ark-poly = { version = "0.4.2", default-features = false }
+ark-ec = { version = "0.4.2", default-features = false }
+ark-relations = { version = "0.4.0", default-features = false }
+ark-serialize = { version = "0.4", default-features = false, features = ["derive"] }
+ark-groth16 = { version = "0.4.0", default-features = false }
+ark-circom = { git = "https://github.com/webb-tools/ark-circom.git" }
+# ARK curves
+ark-bn254 = { version = "0.4", default-features = false, features = ["curve"] }
+ark-secp256k1 = { version = "0.4", default-features = false }
+ark-ed25519 = { version = "0.4", default-features = false }
+
+tokio-rustls = "0.24.1"
+tokio = "1.32.0"
+bincode = "1.3.3"
+futures-util = "0.3.30"
+serde = "1.0.188"
+serde_json = "1.0"
+url = { version = "2.5", default-features = false }
+async-trait = "0.1.73"
+log = "0.4.20"
+tracing = { version = "0.1", default-features = false }
+tracing-subscriber = { version = "0.3", default-features = false }
+parking_lot = "0.12.1"
+futures = "0.3.30"
+hex = "0.4.3"
+auto_impl = "1.1.0"
+uuid = "1.4.1"
+bytes = "1.5.0"
+serde_bytes = "0.11.12"
+itertools = "0.12.0"
+strum = "0.26"
+clap = "4.0.32"
+hex-literal = "0.4.1"
+rand = "0.8.5"
+rand_core = "0.6"
+rand_chacha = "0.3.1"
+jsonrpsee = "0.16.2"
+linked-hash-map = "0.5.6"
+k256 = "0.13.2"
+p256 = "0.13.2"
+signature = "2.2.0"
+starknet-crypto = "0.6.1"
+anyhow = "1.0.79"
+libsecp256k1 = "0.7.1"
+rayon = { version = "1.8.0" }
+thiserror = { version = "=1.0.57" }
+aes-gcm = { version = "0.10", default-features = false, features = ["aes", "alloc", "getrandom", "zeroize"] }
+zeroize = { version = "1", default-features = false, features = ["alloc", "zeroize_derive"] }
+substrate-prometheus-endpoint = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+lazy_static = "1.4.0"
+sqlx = "=0.7.3"
+postcard = "1.0.8"
+sha2 = "0.10.8"
+derivation-path = "0.2.0"
+libp2p = { git = "https://github.com/libp2p/rust-libp2p/", rev = "3644879956b6ab93b8d23553a33e8fdb838f576f" }
+structopt = "0.3.26"
