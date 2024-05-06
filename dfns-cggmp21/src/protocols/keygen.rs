@@ -226,9 +226,6 @@ pub fn create_party<E: Curve, N: Network, L: SecurityLevel, M>(
     i: u16,
 ) -> CreatePartyResult<M>
 where
-    N: Network,
-    L: SecurityLevel,
-    E: Curve,
     M: Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
 {
     let (tx_to_outbound, rx_async_proto, broadcast_tx_to_outbound, broadcast_rx_from_gadget) =

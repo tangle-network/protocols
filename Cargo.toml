@@ -2,7 +2,7 @@
 resolver = "2"
 
 members = [
-"bls",
+    "bls",
     "dfns-cggmp21",
     "ice-frost",
     "stub",
@@ -12,7 +12,7 @@ members = [
 ]
 
 [workspace.dependencies]
-bls = { path = "bls" }
+threshold-bls-protocol = { path = "bls" }
 dfns-cggmp21-protocol = { path = "dfns-cggmp21" }
 ice-frost-protocol = { path = "ice-frost" }
 stub-protocol = { path = "stub" }
