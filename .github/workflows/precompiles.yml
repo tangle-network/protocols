@@ -145,6 +145,5 @@ jobs:
           Get-Content $outputFile
           echo "SHA_PATH=$outputFile" >> $GITHUB_ENV
       - name: Release
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
           gh release create ${{ matrix.platform.target }}-${{ github.sha }} ${{ env.BIN_PATH }} ${{ env.SHA_PATH }}
