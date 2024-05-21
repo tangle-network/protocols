@@ -3,11 +3,25 @@ name = "zcash-frost-protocol"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["std"]
+std = [
+    "shell-sdk/std",
+    "gadget-io/std",
+    "gadget-common/std",
+]
+wasm = [
+    "shell-sdk/wasm",
+    "gadget-io/wasm",
+    "gadget-common/wasm",
+]
+
 [dependencies]
-shell-sdk = { workspace = true }
+shell-sdk = { workspace = true, default-features = false }
 thiserror = { workspace = true }
-tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "net"] }
-gadget-common = { workspace = true }
+#tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "net"] }
+gadget-io = { workspace = true, default-features = false }
+gadget-common = { workspace = true, default-features = false }
 gadget-core = { workspace = true }
 protocol-macros = { workspace = true }
 async-trait = { workspace = true }
@@ -43,10 +57,12 @@ rand = { workspace = true }
 hex = { workspace = true }
 parking_lot = { workspace = true }
 
-
 [dev-dependencies]
 test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "protocol"
