@@ -9,17 +9,25 @@ std = [
     "shell-sdk/std",
     "gadget-io/std",
     "gadget-common/std",
+    "sp-core/std",
+    "sp-io/std",
+    "sp-api/std",
+    "frame-support/std",
 ]
 wasm = [
     "shell-sdk/wasm",
     "gadget-io/wasm",
     "gadget-common/wasm",
+    "sp-core/serde",
+    "sp-core/full_crypto",
+    "sp-io/disable_panic_handler",
+    "sp-io/disable_oom",
+    "sp-io/disable_allocator",
 ]
 
 [dependencies]
 shell-sdk = { workspace = true, default-features = false }
 thiserror = { workspace = true }
-#tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "net"] }
 gadget-io = { workspace = true, default-features = false }
 gadget-common = { workspace = true, default-features = false }
 gadget-core = { workspace = true }
@@ -45,10 +53,10 @@ frost-ristretto255 = { workspace = true }
 frost-secp256k1 = { workspace = true }
 frost-rerandomized = { workspace = true }
 
-sp-core = { workspace = true, features = ["std"] }
-sp-io = { workspace = true, features = ["std"] }
-sp-api = { workspace = true, features = ["std"] }
-frame-support = { workspace = true  }
+sp-core = { workspace = true, default-features = false }
+sp-io = { workspace = true, default-features = false }
+sp-api = { workspace = true, default-features = false }
+frame-support = { workspace = true, default-features = false }
 parity-scale-codec = { workspace = true }
 
 serde = { workspace = true }
@@ -61,8 +69,8 @@ parking_lot = { workspace = true }
 test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
 
-[lib]
-crate-type = ["cdylib", "rlib"]
+#[lib]
+#crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "protocol"

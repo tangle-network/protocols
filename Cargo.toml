@@ -20,11 +20,18 @@ wsts-protocol = { path = "wsts" }
 zcash-frost-protocol = { path = "zcash-frost" }
 zk-saas-protocol = { path = "zk-saas" }
 
-shell-sdk = { git = "https://github.com/webb-tools/gadget", default-features = false }
-gadget-common = { git = "https://github.com/webb-tools/gadget", default-features = false }
-protocol-macros = { git = "https://github.com/webb-tools/gadget" }
-gadget-core = { git = "https://github.com/webb-tools/gadget" }
-test-utils = { git = "https://github.com/webb-tools/gadget" }
+#shell-sdk = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
+#gadget-common = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
+#gadget-io = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
+#protocol-macros = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
+#gadget-core = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
+#test-utils = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
+shell-sdk = { path = "../gadget/shell-sdk", default-features = false }
+gadget-common = { path = "../gadget/common", default-features = false }
+gadget-io = { path = "../gadget/gadget-io", default-features = false }
+protocol-macros = { path = "../gadget/protocol-macros" }
+gadget-core = { path = "../gadget/core" }
+test-utils = { path = "../gadget/test-utils" }
 
 snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
 gennaro-dkg = { git = "https://github.com/mikelodder7/gennaro-dkg.git", default-features = false, rev = "1c15242" }
@@ -67,12 +74,12 @@ bls12_381_plus = "0.8.13"
 wsts = "3.0.0"
 ice-frost = { git = "https://github.com/topos-protocol/ice-frost.git" }
 
-sp-core = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
-sp-io = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk", default-features = false, branch = "release-polkadot-v1.7.0" }
+sp-io = { git = "https://github.com/paritytech/polkadot-sdk", default-features = false, branch = "release-polkadot-v1.7.0" }
 sp-std = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 sc-utils = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
-sp-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+sp-api = { git = "https://github.com/paritytech/polkadot-sdk", default-features = false, branch = "release-polkadot-v1.7.0" }
 sp-application-crypto = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 sp-consensus = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 sp-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
@@ -118,7 +125,7 @@ fork-tree = { git = "https://github.com/paritytech/polkadot-sdk", branch = "rele
 scale-info = "2.10.0"
 
 frame-system = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
-frame-support = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
+frame-support = { git = "https://github.com/paritytech/polkadot-sdk", default-features = false, branch = "release-polkadot-v1.7.0" }
 frame-executive = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 
 pallet-balances = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
