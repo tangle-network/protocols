@@ -20,12 +20,12 @@ wsts-protocol = { path = "wsts" }
 zcash-frost-protocol = { path = "zcash-frost" }
 zk-saas-protocol = { path = "zk-saas" }
 
-#shell-sdk = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
-#gadget-common = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
-#gadget-io = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/browser-gadget" }
-#protocol-macros = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
-#gadget-core = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
-#test-utils = { git = "https://github.com/webb-tools/gadget", branch = "donovan/browser-gadget" }
+#shell-sdk = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/wasm" }
+#gadget-common = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/wasm" }
+#gadget-io = { git = "https://github.com/webb-tools/gadget", default-features = false, branch = "donovan/wasm" }
+#protocol-macros = { git = "https://github.com/webb-tools/gadget", branch = "donovan/wasm" }
+#gadget-core = { git = "https://github.com/webb-tools/gadget", branch = "donovan/wasm" }
+#test-utils = { git = "https://github.com/webb-tools/gadget", branch = "donovan/wasm" }
 shell-sdk = { path = "../gadget/shell-sdk", default-features = false }
 gadget-common = { path = "../gadget/common", default-features = false }
 gadget-io = { path = "../gadget/gadget-io", default-features = false }

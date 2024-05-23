@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["std"]
+default = ["wasm"]
 std = [
     "shell-sdk/std",
     "gadget-io/std",
-    "gadget-common/std",
+    "gadget-common/default",
     "sp-core/std",
     "sp-io/std",
     "sp-api/std",
@@ -18,6 +18,7 @@ wasm = [
     "shell-sdk/wasm",
     "gadget-io/wasm",
     "gadget-common/wasm",
+    "gadget-common/tangle-testnet",
     "sp-core/serde",
     "sp-core/full_crypto",
     "sp-io/disable_panic_handler",
@@ -34,7 +35,6 @@ gadget-core = { workspace = true }
 protocol-macros = { workspace = true }
 async-trait = { workspace = true }
 log = { workspace = true }
-curv = { workspace = true }
 futures = { workspace = true }
 itertools = { workspace = true }
 round-based-21 = { workspace = true, features = ["derive"]}
@@ -69,8 +69,10 @@ parking_lot = { workspace = true }
 test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
 
-#[lib]
-#crate-type = ["cdylib", "rlib"]
+[lib]
+name = "zcash_frost"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "protocol"
