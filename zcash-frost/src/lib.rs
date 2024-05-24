@@ -7,7 +7,8 @@ use gadget_common::tangle_runtime::*;
 use gadget_common::{generate_protocol, generate_setup_and_run_command};
 use protocol_macros::protocol;
 use shell_sdk::prelude::*;
-use gadget_io::tokio as tokio;
+// #[cfg(not(feature = "wasm"))]
+// use gadget_io::tokio as tokio;
 
 pub mod constants;
 pub mod protocol;
@@ -44,7 +45,7 @@ generate_protocol!(
 
 generate_setup_and_run_command!(ZcashFrostKeygenProtocol, ZcashFrostSigningProtocol);
 
-async fn keystore() -> InMemoryBackend {
+pub async fn keystore() -> InMemoryBackend {
     InMemoryBackend::default()
 }
 

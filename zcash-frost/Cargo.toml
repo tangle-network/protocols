@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["wasm"]
+default = ["std"]
 std = [
     "shell-sdk/std",
     "gadget-io/std",

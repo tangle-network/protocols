@@ -1,4 +1,6 @@
-use zcash_frost_protocol::*;
+use zcash_frost::*;
+use shell_sdk::prelude::*;
+use shell_sdk::gadget_io::tokio;
 
 shell_sdk::generate_shell_binary!(
     setup_node,
