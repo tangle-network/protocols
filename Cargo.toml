@@ -31,7 +31,7 @@ gadget-common = { path = "../gadget/common", default-features = false }
 gadget-io = { path = "../gadget/gadget-io", default-features = false }
 protocol-macros = { path = "../gadget/protocol-macros" }
 gadget-core = { path = "../gadget/core" }
-test-utils = { path = "../gadget/test-utils" }
+test-utils = { path = "../gadget/test-utils", default-features = false }
 
 snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
 gennaro-dkg = { git = "https://github.com/mikelodder7/gennaro-dkg.git", default-features = false, rev = "1c15242" }

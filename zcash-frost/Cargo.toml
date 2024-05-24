@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["std"]
+default = ["wasm"]
 std = [
     "shell-sdk/std",
     "gadget-io/std",
@@ -66,8 +66,14 @@ hex = { workspace = true }
 parking_lot = { workspace = true }
 
 [dev-dependencies]
-test-utils = { workspace = true }
 tangle-primitives = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
+test-utils = { workspace = true, default-features = false, features = ["std"] }
+
+[target.'cfg(target_family = "wasm")'.dev-dependencies]
+test-utils = { workspace = true, default-features = false, features = ["wasm"] }
+wasm-bindgen-test = "0.3.34"
 
 [lib]
 name = "zcash_frost"
