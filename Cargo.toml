@@ -8,7 +8,8 @@ members = [
     "stub",
     "wsts",
     "zcash-frost",
-    "zk-saas"
+    "zk-saas",
+    "gadget-executor"
 ]
 
 [workspace.dependencies]
@@ -19,11 +20,13 @@ stub-protocol = { path = "stub" }
 wsts-protocol = { path = "wsts" }
 zcash-frost-protocol = { path = "zcash-frost" }
 zk-saas-protocol = { path = "zk-saas" }
+gadget-executor = { path = "gadget-executor" }
 
 shell-sdk = { git = "https://github.com/webb-tools/gadget" }
-gadget-common = { git = "https://github.com/webb-tools/gadget" }
+gadget-common = { git = "https://github.com/webb-tools/gadget", default-features = false }
 protocol-macros = { git = "https://github.com/webb-tools/gadget" }
 gadget-core = { git = "https://github.com/webb-tools/gadget" }
+gadget-io = { git = "https://github.com/webb-tools/gadget", default-features = false }
 test-utils = { git = "https://github.com/webb-tools/gadget" }
 
 snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }

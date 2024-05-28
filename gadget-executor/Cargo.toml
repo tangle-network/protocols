@@ -1,0 +1,25 @@
+[package]
+name = "gadget-executor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gadget-io = { workspace = true, default-features = false, features = ["default"] }
+gadget-common = { workspace = true, default-features = false, features = ["default"] }
+gadget-core = { workspace = true }
+shell-sdk = { workspace = true }
+protocol-macros = { workspace = true }
+async-trait = { workspace = true }
+futures = "0.3.30"
+itertools = "0.10.5"
+rand = "0.8.5"
+round-based-21 = { workspace = true }
+sp-core = { workspace = true }
+
+
+[dev-dependencies]
+test-utils = { workspace = true }
+
+[[bin]]
+name = "protocol"
+path = "src/main.rs"
