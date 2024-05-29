@@ -15,6 +15,7 @@ itertools = "0.10.5"
 rand = "0.8.5"
 round-based-21 = { workspace = true }
 sp-core = { workspace = true }
+serde = { workspace = true }
 
 
 [dev-dependencies]

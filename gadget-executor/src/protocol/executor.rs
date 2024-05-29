@@ -1,23 +1,13 @@
+use gadget_common::channels;
 use gadget_common::prelude::*;
-
-// /// Message corresponding to any iteration `i` of commands being run
-// #[derive(Clone, Serialize, Deserialize)]
-// #[serde(bound = "")]
-// pub struct Msg {
-//     pub msg: Vec<u8>,
-//     pub msg_number: u8,
-// }
-
-// #[derive(Clone)]
-// pub struct GadgetExecutorExtraParams {
-//     pub i: u16,
-//     // pub t: u16,
-//     // pub n: u16,
-//     pub job_id: u64,
-//     // pub role_type: roles::RoleType,
-//     pub user_id_to_account_id_mapping: Arc<HashMap<UserID, ecdsa::Public>>,
-// }
-
+use gadget_common::tracer::PerfProfiler;
+use rand::SeedableRng;
+use round_based_21::{Incoming, Outgoing};
+use sp_core::Pair;
+use crate::protocol::types::{GadgetExecutorPackage, GadgetExecutorExtraParams, Msg, JobType};
+pub(crate) use crate::run_shell_command;
+pub(crate) use crate::no_args_command;
+//
 // pub async fn create_next_job<C: ClientWithApi, N: Network, KBE: KeystoreBackend>(
 //     config: &crate::GadgetExecutorProtocol<C, N, KBE>,
 //     job: JobInitMetadata,
@@ -60,42 +50,56 @@ use gadget_common::prelude::*;
 //     Ok(params)
 // }
 
+
+#[cfg(target_family = "unix")]
 #[macro_export]
-macro_rules! run_shell_command {
+macro_rules! no_args_command {
     ($cmd:expr) => {{
-        let output = std::process::Command::new("sh")
+        std::process::Command::new("sh")
             .arg("-c")
             .arg($cmd)
             .output()
-            .expect(&format!("Failed to execute: {:?}", $cmd));
-
+            .expect(&format!("Failed to execute: {:?}", $cmd))
+    }};
+}
+#[cfg(target_family = "windows")]
+#[macro_export]
+macro_rules! no_args_command {
+    ($cmd:expr) => {{
+        std::process::Command::new("cmd")
+            .arg("/C")
+            .arg($cmd)
+            .output()
+            .expect(&format!("Failed to execute: {:?}", $cmd))
+    }};
+}
+#[macro_export]
+macro_rules! run_shell_command {
+    ($cmd:expr) => {{
+        let output = crate::no_args_command!($cmd);
         if !output.status.success() {
-            eprintln!("Command failed with status: {}", output.status);
-            std::process::exit(output.status.code().unwrap_or(-1));
+            eprintln!("The following command failed with {}: {}", output.status, $cmd);
         }
-
-        std::str::from_utf8(&output.stdout).unwrap().trim().to_owned()
+        std::str::from_utf8(&output.stdout).unwrap_or("Invalid shell output").to_owned()
     }};
     ($cmd:expr, $($args:expr),*) => {{
         let mut command = std::process::Command::new($cmd);
         $(
-            command.arg($args);
+            let arguments = String::try_from($args).unwrap_or(format!("Argument {:?} is causing an error", $args)).split_whitespace().map(str::to_string).collect::<Vec<String>>();
+            command.args(arguments);
+            // arguments.map(|x| command.arg(x));
+            // command.arg($args);
         )*
         let output = command
             .output()
             .expect(&format!("Failed to execute: {} {:?}", $cmd, &[$($args),*]));
-
         if !output.status.success() {
-            eprintln!("Command failed with status: {}", output.status);
-            std::process::exit(output.status.code().unwrap_or(-1));
+            eprintln!("The following command failed with {}: {}", output.status, $cmd);
         }
-
-        std::str::from_utf8(&output.stdout).unwrap().trim().to_owned()
+        std::str::from_utf8(&output.stdout).unwrap_or("Invalid shell output").to_owned()
     }};
 }
-
-pub(crate) use crate::run_shell_command;
-
+//
 // pub async fn generate_protocol_from<C: ClientWithApi, N: Network, KBE: KeystoreBackend>(
 //     config: &crate::GadgetExecutorProtocol<C, N, KBE>,
 //     associated_block_id: <WorkManager as WorkManagerInterface>::Clock,
