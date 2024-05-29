@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use std::sync::Arc;
 use gadget_common::gadget::message::UserID;
 use gadget_common::tangle_runtime::api::runtime_types;
 use serde::{Deserialize, Serialize};
 use sp_core::ecdsa;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// Message corresponding to any iteration `i` of commands being run
 #[derive(Clone, Serialize, Deserialize)]

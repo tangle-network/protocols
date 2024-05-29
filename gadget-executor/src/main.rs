@@ -1,8 +1,8 @@
+use crate::protocol::executor::*;
 use gadget_common::prelude::*;
 use gadget_common::tangle_runtime::api::runtime_types;
 use gadget_common::tangle_subxt::subxt;
 use shell_sdk::prelude::*;
-use crate::protocol::executor::*;
 
 pub mod protocol;
 
@@ -39,6 +39,7 @@ pub mod protocol;
 //     // roles::RoleType::Tss(roles::tss::ThresholdSignatureRoleType::ZcashFrostRistretto255)
 // );
 
+// Main for testing
 fn main() {
     let output = crate::protocol::executor::run_shell_command!("dir");
     println!("{output}");
@@ -48,20 +49,36 @@ fn main() {
     println!("{output}");
     let output = crate::protocol::executor::run_shell_command!("ping", "-n", "2", "google.com");
     println!("{output}");
-    // let output = crate::protocol::executor::run_shell_command!("docker run hello-world");
-    // println!("{output:?}");
     return;
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     #[test]
+    #[cfg(target_family = "unix")]
     fn test_process_command() {
-        let output = crate::protocol::executor::run_shell_command!("echo Hello World!");
+        let output = crate::protocol::executor::run_shell_command!("dir");
+        println!("{output}");
+        let output = crate::protocol::executor::run_shell_command!("ls");
         println!("{output}");
         let output = crate::protocol::executor::run_shell_command!("ls", "-al");
         println!("{output}");
-        let output = crate::protocol::executor::run_shell_command!("ls");
+        let output = crate::protocol::executor::run_shell_command!("echo TESTING MAIN");
+        println!("{output}");
+        let output = crate::protocol::executor::run_shell_command!("ping", "-c", "2", "google.com");
+        println!("{output}");
+    }
+
+    #[test]
+    #[cfg(target_family = "windows")]
+    fn test_process_command() {
+        let output = crate::protocol::executor::run_shell_command!("dir");
+        println!("{output}");
+        let output = crate::protocol::executor::run_shell_command!("dir", "/AD");
+        println!("{output}");
+        let output = crate::protocol::executor::run_shell_command!("echo TESTING MAIN");
+        println!("{output}");
+        let output = crate::protocol::executor::run_shell_command!("ping", "-n", "2", "google.com");
         println!("{output}");
     }
 }
