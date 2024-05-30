@@ -1,2 +1,3 @@
 pub(crate) mod executor;
-mod types;
+pub(crate) mod types;
+pub(crate) mod macros;

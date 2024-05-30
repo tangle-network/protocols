@@ -16,6 +16,8 @@ rand = "0.8.5"
 round-based-21 = { workspace = true }
 sp-core = { workspace = true }
 serde = { workspace = true }
+async-process = { version = "2.2.2" }
+futures-lite = { version = "2.3.0" }
 
 
 [dev-dependencies]
