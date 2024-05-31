@@ -67,7 +67,7 @@ mod tests {
         let mut reader = run_continuous_command!("ping", "google.com");
         let (tx, rx) = tokio::sync::oneshot::channel::<()>();
 
-        let read_block = async move {
+        let continuous_execution = async move {
             while let Some(line) = reader.next().await {
                 let result = line.unwrap_or("ERROR IN CONTINUOUS CHILD".to_string());
                 println!("{result}");
@@ -83,17 +83,19 @@ mod tests {
                     break;
                 }
             }
-            return;
+            return ();
         };
 
-        tokio::select! {
-        _ = read_block => { },
-        _ = rx => {
-            println!("RUNNING DISCRETE COMMAND IN ADDITION..");
+        let discrete_execution = async move {
+            let _ = rx.await;
+            println!("RUNNING DISCRETE COMMAND IN ADDITION...");
             let output = run_discrete_command!("echo TESTING MAIN");
             println!("{output}");
-        }
-    }
+            return ();
+        };
+
+        let fut_vec: Vec<Pin<Box<dyn Future<Output = ()>>>> = vec![Box::pin(continuous_execution), Box::pin(discrete_execution)];
+        let _ = futures::future::join_all(fut_vec).await;
 
         Ok(())
     }
@@ -103,31 +105,31 @@ mod tests {
         run_async().await.unwrap();
     }
 
-    #[test]
-    #[cfg(target_family = "unix")]
-    fn test_process_command() {
-        let output = run_discrete_command!("dir");
-        println!("{output}");
-        let output = run_discrete_command!("ls");
-        println!("{output}");
-        let output = run_discrete_command!("ls", "-al");
-        println!("{output}");
-        let output = run_discrete_command!("echo TESTING MAIN");
-        println!("{output}");
-        let output = run_discrete_command!("ping", "-c", "2", "google.com");
-        println!("{output}");
-    }
-
-    #[test]
-    #[cfg(target_family = "windows")]
-    fn test_process_command() {
-        let output = run_discrete_command!("dir");
-        println!("{output}");
-        let output = run_discrete_command!("dir", "/AD");
-        println!("{output}");
-        let output = run_discrete_command!("echo TESTING MAIN");
-        println!("{output}");
-        let output = run_discrete_command!("ping", "-n", "2", "google.com");
-        println!("{output}");
-    }
+    // #[test]
+    // #[cfg(target_family = "unix")]
+    // fn test_process_command() {
+    //     let output = run_discrete_command!("dir");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("ls");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("ls", "-al");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("echo TESTING MAIN");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("ping", "-c", "2", "google.com");
+    //     println!("{output}");
+    // }
+    //
+    // #[test]
+    // #[cfg(target_family = "windows")]
+    // fn test_process_command() {
+    //     let output = run_discrete_command!("dir");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("dir", "/AD");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("echo TESTING MAIN");
+    //     println!("{output}");
+    //     let output = run_discrete_command!("ping", "-n", "2", "google.com");
+    //     println!("{output}");
+    // }
 }

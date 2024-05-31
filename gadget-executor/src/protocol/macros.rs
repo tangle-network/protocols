@@ -25,8 +25,9 @@ macro_rules! no_args_discrete {
 macro_rules! no_args_continuous {
     ($cmd:expr) => {{
         async_process::Command::new("sh")
-            .arg("-c")
-            .arg($cmd)
+            .args("-c", $cmd)
+            // .arg("-c")
+            // .arg($cmd)
             .stdout(async_process::Stdio::piped())
             .spawn()
             .expect(&format!("Failed to execute: {:?} - Input should be a valid command", $cmd))
@@ -37,8 +38,9 @@ macro_rules! no_args_continuous {
 macro_rules! no_args_continuous {
     ($cmd:expr) => {{
         async_process::Command::new("cmd")
-            .arg("/C")
-            .arg($cmd)
+            .args(["/C", $cmd])
+            // .arg("/C")
+            // .arg($cmd)
             .stdout(async_process::Stdio::piped())
             .spawn()
             .expect(&format!("Failed to execute: {:?} - Input should be a valid command", $cmd))
