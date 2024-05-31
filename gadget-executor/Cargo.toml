@@ -16,9 +16,12 @@ rand = "0.8.5"
 round-based-21 = { workspace = true }
 sp-core = { workspace = true }
 serde = { workspace = true }
-async-process = { version = "2.2.2" }
+#async-process = { version = "2.2.2" }
+tokio-process = { version = "0.2.5" }
+tokio-io = { version = "0.1.13" }
+tokio = { workspace = true }
 futures-lite = { version = "2.3.0" }
-
+failure = { version = "0.1.8" }
 
 [dev-dependencies]
 test-utils = { workspace = true }
