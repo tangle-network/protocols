@@ -46,3 +46,41 @@ pub struct GadgetExecutorExtraParams {
     // pub role_type: roles::RoleType,
     pub user_id_to_account_id_mapping: Arc<HashMap<UserID, ecdsa::Public>>,
 }
+
+pub mod roles {
+    pub mod executor {
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum CommandExecutor {
+            Ping,
+            Docker,
+            // #[codec(index = 0)]
+            // DfnsCGGMP21Secp256k1,
+            // #[codec(index = 1)]
+            // DfnsCGGMP21Secp256r1,
+            // #[codec(index = 2)]
+            // DfnsCGGMP21Stark,
+            // #[codec(index = 3)]
+            // SilentShardDKLS23Secp256k1,
+            // #[codec(index = 4)]
+            // ZcashFrostP256,
+            // #[codec(index = 5)]
+            // ZcashFrostP384,
+            // #[codec(index = 6)]
+            // ZcashFrostSecp256k1,
+            // #[codec(index = 7)]
+            // ZcashFrostRistretto255,
+            // #[codec(index = 8)]
+            // ZcashFrostEd25519,
+            // #[codec(index = 9)]
+            // ZcashFrostEd448,
+            // #[codec(index = 10)]
+            // GennaroDKGBls381,
+            // #[codec(index = 11)]
+            // WstsV2,
+        }
+    }
+    pub enum RoleType {
+        #[codec(index = 0)]
+        executor(crate::roles::executor::CommandExecutor),
+    }
+}
