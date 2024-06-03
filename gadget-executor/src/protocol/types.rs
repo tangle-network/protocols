@@ -80,7 +80,6 @@ pub mod roles {
         }
     }
     pub enum RoleType {
-        #[codec(index = 0)]
-        executor(crate::roles::executor::CommandExecutor),
+        Executor(crate::roles::executor::CommandExecutor),
     }
 }
