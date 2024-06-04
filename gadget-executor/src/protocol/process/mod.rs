@@ -1,2 +1,2 @@
 mod manager;
-mod types;
+pub(crate) mod types;

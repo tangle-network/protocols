@@ -43,27 +43,48 @@ mod tests {
     use super::*;
     use tokio::time::sleep;
 
+    use procfs::process::Process;
+
+    #[tokio::test]
+    async fn test_proc() {
+        let me = Process::myself().unwrap();
+        let me_stat = me.status().unwrap();
+        println!("PID: {}", me.pid);
+        println!("State: {}", me_stat.state)
+
+        // let page_size = procfs::page_size();
+        // println!("Memory page size: {}", page_size);
+        //
+        // println!("== Data from /proc/self/stat:");
+        // println!("Total virtual memory used: {} bytes", me_stat.vsize);
+        // println!(
+        //     "Total resident set: {} pages ({} bytes)",
+        //     me_stat.rss,
+        //     me_stat.rss * page_size
+        // );
+    }
+
 
     #[tokio::test]
     async fn test_orphan() {
-        let s = System::new_all();
-        for (pid, process) in s.processes() {
-            if process.name().contains("protocol") {
-                println!("{} {}", pid, process.name());
-            }
-        }
-
-        let mut output = run_command!("ping -c 30 localhost");
-
-        for (pid, process) in s.processes() {
-            if process.name().contains("protocol") {
-                println!("{} {}", pid, process.name());
-            }
-        }
-
-        while let Some(line) = output.next_line().await.unwrap() {
-            println!("{}", line);
-        }
+        // let s = System::new_all();
+        // for (pid, process) in s.processes() {
+        //     if process.name().contains("protocol") {
+        //         println!("{} {}", pid, process.name());
+        //     }
+        // }
+        //
+        // let mut output = run_command!("ping -c 30 localhost");
+        //
+        // for (pid, process) in s.processes() {
+        //     if process.name().contains("protocol") {
+        //         println!("{} {}", pid, process.name());
+        //     }
+        // }
+        //
+        // while let Some(line) = output.next_line().await.unwrap() {
+        //     println!("{}", line);
+        // }
 
         // unsafe {
         //     match fork().expect("Failed to fork process") {

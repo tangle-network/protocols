@@ -3,6 +3,7 @@ pub use std::process::Stdio;
 pub use tokio::io::Lines;
 pub use tokio::io::{AsyncBufReadExt, BufReader};
 pub use tokio::process::{Child, Command};
+use crate::protocol::process::types::GadgetProcess;
 
 #[cfg(target_family = "unix")]
 pub(crate) static OS_COMMAND: (&str, &str) = ("sh", "-c");
@@ -56,12 +57,24 @@ pub(crate) fn create_stream(mut child: Child) -> Lines<BufReader<tokio::process:
 macro_rules! run_command {
     ($cmd:expr) => {{
         // Spawn child running process
-        let mut child = craft_child_process!($cmd);
-        create_stream(child)
+        let mut child: Child = craft_child_process!($cmd);
+        let stream = create_stream(child);
+        GadgetProcess::new(
+            command: $cmd.to_string(),
+            process_name: ,
+            pid: child.id(),
+            output: Vec::new(),
+        )
     }};
     ($cmd:expr, $($args:expr),*) => {{
         // Spawn child running process
         let mut child = craft_child_process!($cmd,$($args),*);
-        create_stream(child)
+        let stream = create_stream(child);
+        GadgetProcess::new(
+            command: $cmd.to_string(),
+            process_name: ,
+            pid: child.id(),
+            output: Vec::new(),
+        )
     }};
 }
