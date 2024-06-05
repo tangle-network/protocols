@@ -1,9 +1,9 @@
+use crate::protocol::process::types::GadgetProcess;
 pub use futures::{future::Future, stream::Stream, FutureExt, StreamExt};
 pub use std::process::Stdio;
 pub use tokio::io::Lines;
 pub use tokio::io::{AsyncBufReadExt, BufReader};
 pub use tokio::process::{Child, Command};
-use crate::protocol::process::types::GadgetProcess;
 
 #[cfg(target_family = "unix")]
 pub(crate) static OS_COMMAND: (&str, &str) = ("sh", "-c");
@@ -58,23 +58,25 @@ macro_rules! run_command {
     ($cmd:expr) => {{
         // Spawn child running process
         let mut child: Child = craft_child_process!($cmd);
+        let pid = child.id().clone();
         let stream = create_stream(child);
         GadgetProcess::new(
-            command: $cmd.to_string(),
-            process_name: ,
-            pid: child.id(),
-            output: Vec::new(),
+            $cmd.to_string(),
+            pid,
+            Vec::new(),
+            stream,
         )
     }};
     ($cmd:expr, $($args:expr),*) => {{
         // Spawn child running process
         let mut child = craft_child_process!($cmd,$($args),*);
+        let pid = child.id().clone();
         let stream = create_stream(child);
         GadgetProcess::new(
-            command: $cmd.to_string(),
-            process_name: ,
-            pid: child.id(),
-            output: Vec::new(),
+            $cmd.to_string(),
+            pid,
+            Vec::new(),
+            stream,
         )
     }};
 }
