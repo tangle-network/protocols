@@ -19,15 +19,41 @@ async fn main() {
 mod tests {
     use super::*;
     use crate::protocol::executor::run_executor;
+    use crate::protocol::process::manager::GadgetProcessManager;
+    use tokio::fs::File;
+    use tokio::io::AsyncReadExt;
 
     #[tokio::test]
     async fn test_executor() {
         let the_file = r#"{
             "commands": [
                 ["ping_google", "ping -c 5 google.com"],
-                ["ping_local", ["ping -c 5 localhost", "ls", "clear"]]
+                ["ping_local", "ping -c 5 localhost"],
+                ["sequence_test", ["ping -c 5 localhost", "ls", "clear"]]
             ]
         }"#;
         run_executor(the_file).await;
+    }
+
+    #[tokio::test]
+    async fn test_loading() {
+        // let the_file = r#"{
+        //     "commands": [
+        //         ["ping_google", "ping -c 5 google.com"],
+        //         ["ping_local", "ping -c 5 localhost"],
+        //         ["sequence_test", ["ping -c 5 localhost", "ls", "clear"]]
+        //     ]
+        // }"#;
+
+        let new_manager = GadgetProcessManager::new_from_saved("./savestate.json")
+            .await
+            .unwrap();
+
+        for (service, child) in new_manager.children {
+            println!(
+                "Child {} has:\n\t Name: {}\t PID: {}\t Output:{:?}",
+                service, child.process_name, child.pid, child.output
+            )
+        }
     }
 }
