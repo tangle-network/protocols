@@ -1,7 +1,4 @@
-use std::collections::HashMap;
-use std::error::Error;
-use std::str::from_utf8;
-// use std::str::from_utf8;
+#![allow(dead_code)]
 use crate::process::types::{GadgetProcess, Status};
 use crate::protocol::utils::*;
 use crate::{craft_child_process, run_command, OS_COMMAND};
@@ -11,6 +8,8 @@ use nix::sys::signal;
 use nix::sys::signal::Signal;
 use procfs::process::Process;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::error::Error;
 use sysinfo::{Pid, System};
 use tokio::fs::File;
 use tokio::io::AsyncWriteExt;
@@ -62,12 +61,12 @@ impl GadgetProcessManager {
 
     /// Removes processes that are no longer running from the manager. Returns a Vector of the names of processes removed
     pub(crate) async fn remove_dead(&mut self) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut dead_processes = Vec::new();
+        let dead_processes = Vec::new();
         let mut to_remove = Vec::new();
         let s = System::new_all();
 
         // Find dead processes and gather them for return
-        let mut running_processes = s.processes().keys().into_iter();
+        let mut running_processes = s.processes().keys();
         for (key, value) in self.children.iter() {
             // Move on if the PID exists and has the correct name
             let current_pid = value.pid;

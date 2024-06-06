@@ -1,10 +1,7 @@
 use crate::protocol::utils::*;
-use futures_lite::prelude::*;
 use gadget_common::prelude::*;
 use gadget_io::tokio;
-use protocol::types::roles;
 use protocol::*;
-use shell_sdk::prelude::*;
 
 pub mod protocol;
 
@@ -20,8 +17,6 @@ mod tests {
     use super::*;
     use crate::protocol::executor::run_executor;
     use crate::protocol::process::manager::GadgetProcessManager;
-    use tokio::fs::File;
-    use tokio::io::AsyncReadExt;
 
     #[tokio::test]
     async fn test_executor() {

@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use crate::process::types::GadgetInstructionData;
 use crate::protocol::process::manager::GadgetProcessManager;
 use crate::protocol::process::types::{CommandOrSequence, ProcessOutput};
@@ -36,7 +37,7 @@ pub async fn run_executor(instructions: &str) {
 
     // Receive input from all running processes
     let mut ended = Vec::new();
-    for (service, mut process) in &mut manager.children {
+    for (service, process) in &mut manager.children {
         println!("LOG : Process {}", service.clone());
         let status = process.status().unwrap();
         println!("\tSTATUS: {:?}", status);

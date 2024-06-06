@@ -1,5 +1,5 @@
-use crate::protocol::process::types::GadgetProcess;
-pub use futures::{future::Future, stream::Stream, FutureExt, StreamExt};
+#![allow(dead_code)]
+pub use futures::{FutureExt, StreamExt};
 pub use std::process::Stdio;
 pub use tokio::io::Lines;
 pub use tokio::io::{AsyncBufReadExt, BufReader};
@@ -57,7 +57,7 @@ pub(crate) fn create_stream(mut child: Child) -> Lines<BufReader<tokio::process:
 macro_rules! run_command {
     ($cmd:expr) => {{
         // Spawn child running process
-        let mut child: Child = craft_child_process!($cmd);
+        let child: Child = craft_child_process!($cmd);
         let pid = child.id().clone();
         let stream = create_stream(child);
         GadgetProcess::new(
@@ -69,7 +69,7 @@ macro_rules! run_command {
     }};
     ($cmd:expr, $($args:expr),*) => {{
         // Spawn child running process
-        let mut child = craft_child_process!($cmd,$($args),*);
+        let child = craft_child_process!($cmd,$($args),*);
         let pid = child.id().clone();
         let stream = create_stream(child);
         GadgetProcess::new(

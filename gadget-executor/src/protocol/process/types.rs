@@ -1,15 +1,14 @@
+#![allow(dead_code)]
 use crate::protocol::utils::*;
 use crate::{craft_child_process, run_command, OS_COMMAND};
-use failure::{format_err, Context};
-use futures::future::poll_fn;
+use failure::format_err;
 use nix::libc::pid_t;
 use nix::sys::signal;
 use nix::sys::signal::Signal;
 use procfs::process::Process;
-use procfs::{ProcError, ProcResult};
+use procfs::ProcError;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use std::pin::Pin;
 use std::time::Duration;
 use tokio::io::{BufReader, Lines};
 pub use tokio::process::Child;
@@ -53,10 +52,11 @@ impl GadgetProcess {
 
     /// Read output from this GadgetProcess, returning None if there was no output
     pub async fn read(&mut self) -> ProcessOutput {
-        let mut messages = Vec::new();
+        let messages = Vec::new();
         if let Some(stream) = &mut self.stream {
             // Read lines until we time out, meaning we are still waiting for output - continue for now
-            while let read_result = timeout(Duration::from_millis(50), stream.next_line()).await {
+            loop {
+                let read_result = timeout(Duration::from_millis(50), stream.next_line()).await;
                 match read_result {
                     Ok(output) => {
                         if output.is_err() {
@@ -94,7 +94,7 @@ impl GadgetProcess {
                             self.process_name.clone(),
                             timeout
                         );
-                        continue;
+                        break;
                     }
                 }
             }
@@ -141,7 +141,7 @@ impl GadgetProcess {
         match Process::new(self.pid as i32) {
             Ok(process) => {
                 let status = process.stat()?;
-                Ok(Status::try_from(status.state)?)
+                Ok(Status::from(status.state))
             }
             Err(err) => {
                 if matches!(err, ProcError::NotFound(_)) {
@@ -153,7 +153,7 @@ impl GadgetProcess {
                         "ERROR : Status check on process {} yielded {:?}",
                         self.pid, err
                     );
-                    return Err(err.into());
+                    Err(err.into())
                 }
             }
         }
